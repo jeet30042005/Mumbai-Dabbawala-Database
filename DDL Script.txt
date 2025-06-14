@@ -1,0 +1,89 @@
+CREATE SCHEMA Mumbai_Dabbawala;
+SET SEARCH_PATH TO Mumbai_Dabbawala;
+CREATE TABLE Dabba (
+	Did CHAR(10),
+	SD_Code CHAR(10),
+	SS_Code VARCHAR,
+	DS_Code VARCHAR,
+	DD_Code CHAR(10),
+	Express_Tower CHAR(1),
+	Floor_no INTEGER,
+	PRIMARY KEY (Did)
+);
+
+CREATE TABLE Dabbawala (
+	DWid INTEGER,
+	Did CHAR(100),
+	DW_Fname VARCHAR,
+	DW_Mname VARCHAR,
+	DW_Lname VARCHAR,
+	Gender CHAR(1),
+	DOJ DATE,
+	Contact_no CHAR(10),
+	Supervisor_id INTEGER,
+	PRIMARY KEY (DWid),
+	FOREIGN KEY (Supervisor_id) REFERENCES Dabbawala(DWid)
+);
+
+CREATE TABLE Customer (
+	Cid VARCHAR(10),
+	Did CHAR(10),
+	C_Fname VARCHAR,
+	C_Mname VARCHAR,
+	C_Lname VARCHAR,
+	Desti_Address VARCHAR,
+	Contact_no CHAR(10),
+	Debt INTEGER,
+	PRIMARY KEY (Cid),
+	FOREIGN KEY (Did) REFERENCES Dabba(Did)
+);
+
+CREATE TABLE Orders (
+	Oid VARCHAR(10),
+	Cid VARCHAR(10),
+	Date DATE,
+	PRIMARY KEY (Oid),
+	FOREIGN KEY (Cid) REFERENCES Customer(Cid)
+);
+
+CREATE TABLE Payment (
+	Tid CHAR(12),
+	Oid CHAR(10),
+	Cid CHAR(10),
+	Date DATE,
+	Amount INTEGER,
+	PRIMARY KEY (Tid),
+	FOREIGN KEY (Oid) REFERENCES Orders(Oid),
+	FOREIGN KEY (Cid) REFERENCES Customer(Cid)
+);
+
+CREATE TABLE Donation (
+	DTranid CHAR(12),
+	Cid CHAR(10),
+	D_Fname VARCHAR,
+	D_Mname VARCHAR,
+	D_Lname VARCHAR,
+	Amount INTEGER,
+	Date DATE,
+	Contact_no CHAR(10),
+	PRIMARY KEY (DTranid),
+	FOREIGN KEY (Cid) REFERENCES Customer(Cid)
+);
+
+CREATE TABLE Holiday (
+	DWid INTEGER,
+	hdate DATE,
+	Reason VARCHAR,
+	FOREIGN KEY (DWid) REFERENCES Dabbawala(DWid)
+);
+
+CREATE TABLE Punishment (
+	DWid INTEGER,
+	Date DATE,
+	Reason VARCHAR,
+	Punishment VARCHAR,
+	Status CHAR(15)
+	FOREIGN KEY (DWid) REFERENCES Dabbawala(DWid)
+);
+
+
