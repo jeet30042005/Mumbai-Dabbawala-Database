@@ -1,0 +1,251 @@
+Que 1: Find list of all supervisors of dabbawalas
+Ans: select distinct supervisor_id from dabbawala where supervisor_id is Not null
+
+Que 2: Find the no. of dabbas sent in a particular area(Destination area lets say panvel whose ds code is PL)
+Ans:  select count(did) from dabba where ds_code='PL'
+
+Que 3:Find the no. of dabbas received from a particular area(source area lets say church gate whose ss_code is C)
+Ans: select count(did) from dabba where ss_code='C'
+
+Que 4: Find the Dabbawal who has taken most leaves.
+Ans: SELECT DWid, COUNT(*) AS Leave_Count FROM Holiday GROUP BY DWid ORDER BY Leave_Count DESC LIMIT 1;
+
+Que 5: Retrieve dabbas served by the supervisors.
+Ans: SELECT d.Did, d.DWid 
+FROM Dabbawala d 
+JOIN (SELECT DISTINCT Supervisor_id FROM Dabbawala WHERE Supervisor_id IS NOT NULL) s 
+ON s.Supervisor_id = d.DWid;
+
+Que 6: Retrieve data on the number of male dabbawalas.
+Ans: SELECT COUNT(*) AS MaleDabbawalas FROM Dabbawala WHERE Gender = 'M';
+
+Que 7: Retrieve data on the number of female dabbawalas.
+Ans: SELECT COUNT(*) AS FemaleDabbawalas FROM Dabbawala WHERE Gender = 'F';
+
+Que 8: Retrieve the name of all male dabbawalas.
+Ans: SELECT dw_fname,dw_mname,dw_lname AS MaleDabbawalas FROM Dabbawala WHERE Gender = 'M';
+
+Que 9: Retrieve the name of all female dabbawalas.
+Ans: SELECT dw_fname,dw_mname,dw_lname AS FemaleDabbawalas FROM Dabbawala WHERE Gender = 'F';
+
+Que 10: Retrieve dabbas that are picked from same station.(lets say that the station code is C(Andheri)).
+Ans: select did from dabba where ss_code = 'C'
+
+Que 11: Retrieve dabbas that are dropped at the same station (Lets say that the station code is K(Kalyan junction)).
+Ans: select did from dabba where ds_code = 'K'
+
+Que 12: Count no. of dabbas picked from particular station. (Lets say that the particular station is GO (Goregaon)).
+Ans: SELECT COUNT(*) AS NumberOfDabbasPicked FROM Dabba WHERE ss_code = 'GO'
+
+Que 13: Count no. of dabbas dropped at a particular station. (Lets say that the particular station is T (Thane)).
+Ans: SELECT COUNT(*) AS NumberOfDabbasdropped FROM Dabba WHERE ds_code = 'T'
+
+Que 14: list DWid,DW_Fname,DW_Mname,DW_Lname of the most experienced dabbawala.
+Ans: SELECT DWid,DW_Fname,DW_Mname,DW_Lname FROM Dabbawala ORDER BY date ASC LIMIT 1;
+
+Que 15: Find experience of a particular dabbawala.
+Ans:  select dwid,EXTRACT (YEAR FROM CURRENT_DATE) - EXTRACT (YEAR FROM date) as experience FROM dabbawala
+
+Que 16: find the dabbawala who took holiday on the same day.
+Ans: SELECT DISTINCT dw.DWid,DW_Fname,DW_Mname,DW_Lname FROM Dabbawala dw JOIN holiday h ON dw.DWid = h.DWid WHERE DATE(dw.date) = DATE(h.hdate);
+
+Que 17: No. of dabbawalas taking leave for medical emergency.
+Ans: select count(*) from holiday where reason = 'Medical emergency'
+
+Que 18: Dabbawalas who received punishment due to a reason. (lets say the reason is misbehaviour).
+Ans: select DWid from Punishment where reason = 'Misbehaviour'
+
+Que 19: Dabbawala whose punishment is incomplete.
+Ans: select DWid from punishment where status = 'Incomplete'
+
+Que 20: List the name of all the customers.
+Ans: select c_fname, c_mname, c_lname from customer
+
+Que 21: For a particular customer which Dabbawla picks up dabba. (lets say for customer C5)
+Ans: SELECT Dab.DWid, Dab.DW_Fname, Dab.DW_Mname, Dab.DW_Lname FROM Dabbawala Dab join customer C on dab.Did = c.Did WHERE C.Cid = 'C5';
+
+Que 22: Find the number of customers who are in debt.
+Ans: select count(*) from customer where debt = 0;
+
+Que 23: find the No. of customers who have placed an order on the same date.
+Ans: SELECT COUNT(*) AS Number_of_Customers
+FROM (
+    SELECT O.Date, COUNT(DISTINCT O.Cid) AS Customers
+    FROM Orders O
+    GROUP BY O.Date
+    HAVING COUNT(DISTINCT O.Cid) > 1
+) AS Subquery;
+
+Que 24: what is the dabba id for a particular order id.(lets say that the particular order id is T012121)
+Ans: select Did from customer join orders on customer.Cid = orders.Cid where Oid='T012121'
+
+Que 25: who was the dabbawala who has delivered a particular dabba. (lets say that the particular dabba is D1 and it is delivered by ramesh motilal pandey)
+Ans:select DW_Fname,DW_Mname,DW_Lname from dabbawala where did = 'D1'
+
+Que 26: find a particular transaction id belongs to what customer.
+Ans select cid from payment where tid = '175247189635'
+
+Que 27: Find the numbers of customers who have donated
+Ans: select count(*) from Donation where cid != 'NULL'
+
+Que 28: List the name of donors.
+Ans: select d_fname,d_mname,d_lname from donation
+
+Que 29: Find customers with no orders.
+Ans: SELECT C.Cid, C.C_Fname, C.C_Mname ,C.C_Lname
+FROM Customer C
+LEFT JOIN Orders O ON C.Cid = O.Cid
+WHERE O.Oid IS NULL;
+
+Que 30: Find Dabbawala with no supervisors
+Ans: SELECT DWid, DW_Fname, DW_Mname ,DW_Lname
+FROM Dabbawala
+WHERE Supervisor_id IS NULL;
+
+Que 31: Find customers who haven’t paid their orders
+Ans: SELECT C.Cid, C.C_Fname, C.C_Lname
+FROM Customer C
+INNER JOIN Orders O ON C.Cid = O.Cid
+LEFT JOIN Payment P ON O.Oid = P.Oid
+WHERE P.Oid IS NULL;
+
+Que 32: Find customers who placed orders in a specific month (lets say the month is april (04))
+Ans: SELECT DISTINCT C.Cid, C.C_Fname,C.C_Mname ,C.C_Lname
+FROM Customer C
+INNER JOIN Orders O ON C.Cid = O.Cid
+WHERE EXTRACT(MONTH FROM O.Date) = 04
+
+Que 33: Find the customer who have placed orders on multiple dates.
+Ans: SELECT C.Cid, C.C_Fname,C.C_Mname ,C.C_Lname
+FROM Customer C
+INNER JOIN Orders O ON C.Cid = O.Cid
+GROUP BY C.Cid, C.C_Fname, C.C_Mname, C.C_Lname
+HAVING COUNT(DISTINCT O.Date) > 1;
+
+Que 34: Find the most common DS_code for delivers.
+Ans: SELECT DS_Code, COUNT(*) AS Total_Deliveries
+FROM Dabba
+GROUP BY DS_Code
+ORDER BY Total_Deliveries DESC
+LIMIT 1;
+
+Que 35: Find the total amount of payments received on a specific date.
+Ans: SELECT SUM(Amount) AS Total_Payments
+FROM Payment
+WHERE Date = '2023-07-12';  	
+
+Que 36: Find the top 5 Destination areas with the highest Delivery Counts.
+Ans: SELECT DS_Code, COUNT(*) AS Total_Deliveries
+FROM Dabba
+GROUP BY DS_Code
+ORDER BY Total_Deliveries DESC
+LIMIT 5;
+
+Que 37: Find the total revenue this month. (current month is april)
+Ans: SELECT SUM(Amount) AS Total_Revenue_This_Month
+FROM Payment
+WHERE EXTRACT(MONTH FROM Date) = EXTRACT(MONTH FROM CURRENT_DATE);
+
+Que 38: List the donor’s name,amount with the highest amount of donation
+Ans: SELECT D.D_Fname, D.D_Mname, D.D_Lname, MAX(D.Amount) AS Highest_Donation_Amount
+FROM Donation D
+GROUP BY D.D_Fname, D.D_Mname, D.D_Lname
+ORDER BY Highest_Donation_Amount DESC
+LIMIT 1;
+
+Que 39: List customer and their total debt.
+Ans: SELECT Cid, C_Fname, C_Mname, C_Lname, SUM(Debt) AS TotalDebt
+FROM Customer
+GROUP BY Cid, C_Fname, C_Mname, C_Lname
+ORDER BY TotalDebt DESC;
+
+Que 40: Retrieve Dabbawalas and their contact information.
+Ans:SELECT DWid, DW_Fname, DW_Mname ,DW_Lname, Contact_no
+FROM Dabbawala;
+
+
+
+IMPORTANT QUERIES / HIGHLIGHTED QUERIES
+
+
+
+
+Que 1: Find customers with no orders.
+Ans: SELECT C.Cid, C.C_Fname, C.C_Mname ,C.C_Lname
+FROM Customer C
+LEFT JOIN Orders O ON C.Cid = O.Cid
+WHERE O.Oid IS NULL;
+
+Que 2: Find Dabbawala with no supervisors
+Ans: SELECT DWid, DW_Fname, DW_Mname ,DW_Lname
+FROM Dabbawala
+WHERE Supervisor_id IS NULL;
+
+Que 3: Find customers who haven’t paid their orders
+Ans: SELECT C.Cid, C.C_Fname, C.C_Lname
+FROM Customer C
+INNER JOIN Orders O ON C.Cid = O.Cid
+LEFT JOIN Payment P ON O.Oid = P.Oid
+WHERE P.Oid IS NULL;
+
+Que 4: Find customers who placed orders in a specific month (lets say the month is april (04))
+Ans: SELECT DISTINCT C.Cid, C.C_Fname,C.C_Mname ,C.C_Lname
+FROM Customer C
+INNER JOIN Orders O ON C.Cid = O.Cid
+WHERE EXTRACT(MONTH FROM O.Date) = 04
+
+Que 5: Find the customer who have placed orders on multiple dates.
+Ans: SELECT C.Cid, C.C_Fname,C.C_Mname ,C.C_Lname
+FROM Customer C
+INNER JOIN Orders O ON C.Cid = O.Cid
+GROUP BY C.Cid, C.C_Fname, C.C_Mname, C.C_Lname
+HAVING COUNT(DISTINCT O.Date) > 1;
+
+Que 6: Find the most common DS_code for delivers.
+Ans: SELECT DS_Code, COUNT(*) AS Total_Deliveries
+FROM Dabba
+GROUP BY DS_Code
+ORDER BY Total_Deliveries DESC
+LIMIT 1;
+
+Que 7: Find the total amount of payments received on a specific date.
+Ans: SELECT SUM(Amount) AS Total_Payments
+FROM Payment
+WHERE Date = '2023-07-12';  	
+
+Que 8: Find the top 5 Destination areas with the highest Delivery Counts.
+Ans: SELECT DS_Code, COUNT(*) AS Total_Deliveries
+FROM Dabba
+GROUP BY DS_Code
+ORDER BY Total_Deliveries DESC
+LIMIT 5;
+
+Que 9: Find the total revenue this month. (current month is april)
+Ans: SELECT SUM(Amount) AS Total_Revenue_This_Month
+FROM Payment
+WHERE EXTRACT(MONTH FROM Date) = EXTRACT(MONTH FROM CURRENT_DATE);
+
+Que 10: List the donor’s name,amount with the highest amount of donation
+Ans: SELECT D.D_Fname, D.D_Mname, D.D_Lname, MAX(D.Amount) AS Highest_Donation_Amount
+FROM Donation D
+GROUP BY D.D_Fname, D.D_Mname, D.D_Lname
+ORDER BY Highest_Donation_Amount DESC
+LIMIT 1;
+
+Que 11: List customer and their total debt.
+Ans: SELECT Cid, C_Fname, C_Mname, C_Lname, SUM(Debt) AS TotalDebt
+FROM Customer
+GROUP BY Cid, C_Fname, C_Mname, C_Lname
+ORDER BY TotalDebt DESC;
+
+Que 12: find the dabbawala who took holiday on the same day.
+Ans: SELECT DISTINCT dw.DWid,DW_Fname,DW_Mname,DW_Lname FROM Dabbawala dw JOIN holiday h ON dw.DWid = h.DWid WHERE DATE(dw.date) = DATE(h.hdate);
+
+Que 13: For a particular customer which Dabbawla picks up dabba. (lets say for customer C5)
+Ans: SELECT Dab.DWid, Dab.DW_Fname, Dab.DW_Mname, Dab.DW_Lname FROM Dabbawala Dab join customer C on dab.Did = c.Did WHERE C.Cid = 'C5';
+
+
+
+
+
+
